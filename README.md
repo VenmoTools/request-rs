@@ -7,8 +7,23 @@ This crate is base on [http crate](https://github.com/hyperium/http), thanks for
 
 ## Build Request 
 ```rust
+
 use request_rs::produce::*;
 use url::Url;
+
+use request_rs::headers::HeaderMap;
+pub fn simple_get(){
+    let resp = HttpClient::request(Method::GET,"http://www.example.com/", None, None).expect("failed");
+    assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
+}
+
+pub fn simple_get_with_header(){
+    let mut header = HeaderMap::new();
+    header.append("Accept","text/html".parse().unwrap());
+    
+    let resp = HttpClient::request(Method::GET,"http://www.example.com/", None, Some(header)).expect("failed");
+    assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
+}
 
 pub fn build_request(){
     let mut req = Request::builder()
@@ -17,55 +32,36 @@ pub fn build_request(){
                 .header("User-Agent", "request-rs")
                 .header("Host", host)
                 .version(Version::HTTP_11)
-                .body(Vec::new());
-    let mut client = Client::new(&req).expect("failed");
-    let response = client.send().expect("request failed");
-    assert_eq!(response.status(),StatusCode(200));
+                .body(());
+    let client = HttpClient::http();
+    let response = client.send(req).expect("request failed");
+    assert_eq!(response.status(),StatusCode::from_u16(200).unwrap());
 }
 ```
 
-## Build Request with timeout
-```rust
-use request_rs::produce::*;
-use url::Url;
-use std::time::Duration;
-
-pub fn with_timeout(){
-    let mut req = Request::builder()
-                .method(Method::GET)
-                .uri(Url::parse("https://www.baidu.com"))
-                .header("User-Agent", "request-rs")
-                .header("Host", host)
-                .version(Version::HTTP_11)
-                .body(Vec::new());
-    let mut client = Client::with_timeout(&req,Duration::from_secs(30)).expect("failed");
-    let response = client.send().expect("request failed");
-    assert_eq!(response.status(),StatusCode(200));
-}
-```
 
 ## Simple Get Request
-```rust
+ ```rust
 use request_rs::produce::*;
 use url::Url;
-use std::collections::BTreeMap;
+use request_rs::headers::HeaderMap;
 pub fn simple_get(){
-    let resp = Client::get(Url::parse("http://www.example.com/").expect("failed"), Vec::new(), None).expect("failed");
-    assert_eq!(StatusCode(200), resp.status());
+    let resp = HttpClient::get("http://www.example.com/", None, None).expect("failed");
+    assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
 }
 
 pub fn simple_get_with_header(){
-    let mut header = BTreeMap::new();
-    header.insert("Accept","text/html");
-    let resp = Client::get(Url::parse("http://www.example.com/").expect("failed"), Vec::new(), Some(header)).expect("failed");
-    assert_eq!(StatusCode(200), resp.status());
+    let mut header = HeaderMap::new();
+    header.append("Accept","text/html".parse().unwrap());
+    let resp = HttpClient::get("http://www.example.com/", None, Some(header)).expect("failed");
+    assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
 }
 
 pub fn simple_get_with_param(){
-    let mut header = BTreeMap::new();
-    header.insert("Accept","text/html");
-    let resp = Client::get(Url::parse("http://www.example.com/?admin=yes&show=yes").expect("failed"),Vec::new(), Some(header)).expect("failed");
-    assert_eq!(StatusCode(200), resp.status());
+    let mut header = HeaderMap::new();
+    header.append("Accept","text/html".parse().unwrap());
+    let resp = HttpClient::get("http://www.example.com/?admin=yes&show=yes",None, Some(header)).expect("failed");
+    assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
 }
 ```
 
@@ -73,13 +69,30 @@ pub fn simple_get_with_param(){
 ```rust
 use request_rs::produce::*;
 use url::Url;
-use std::collections::BTreeMap;
+use request_rs::headers::HeaderMap;
+
 pub fn simple_post_with_data(){
-  let body = Vec::from("username=admin&password123".as_bytes());
-  let mut header = BTreeMap::new();
-  header.insert("Accept","text/html");
-  let resp = Client::post(Url::parse("http://www.example.com/").expect("failed"),body, Some(header)).expect("failed");
-  assert_eq!(StatusCode(200), resp.status());
+    let body = Body::from_str("username=admin&password123");
+    let mut header = HeaderMap::new();
+    header.append("Accept","text/html".parse().unwrap());
+    let resp = HttpClient::post("http://www.example.com/",Some(body), Some(header)).expect("failed");
+    assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
+}
+
+pub fn simple_post_with_file(){ 
+    let body = Body::from_file("example.file");
+    let mut header = HeaderMap::new();
+    header.append("Accept","text/html".parse().unwrap());
+    let resp = HttpClient::post("http://www.example.com/",Some(body), Some(header)).expect("failed");
+    assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
+}
+
+pub fn simple_post_with_empty(){ 
+    let body = Body::empty();
+    let mut header = HeaderMap::new();
+    header.append("Accept","text/html".parse().unwrap());
+    let resp = HttpClient::post("http://www.example.com/",Some(body), Some(header)).expect("failed");
+    assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
 }
 ```
 
@@ -102,3 +115,5 @@ dual licensed as above, without any additional terms or conditions.
 2. https support
 3. More ergonomic APIs
 4. json serialize/deserialize support
+5. cookie jar
+6. authorization support

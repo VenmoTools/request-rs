@@ -884,6 +884,32 @@ impl Builder {
         })
     }
 
+    /// Set the HTTP headers for this request.
+    ///
+    /// This function will configure the HTTP version of the `Response` that
+    /// will be returned from `Builder::build`.
+    ///
+    /// By default this is HTTP/1.1
+    ///
+     /// # Examples
+    ///
+    /// ```
+    /// use request_rs::produce::*;
+    /// use request_rs::headers::HeaderMap;
+    /// let mut header = HeaderMap::new();
+    /// header.append("Content-Type","text/html".parse().unwrap());
+    /// let response = Response::builder()
+    ///     .version(Version::HTTP_2)
+    ///     .set_header_map(header)
+    ///     .unwrap();
+    /// ```
+    pub fn replace_header_map(self, map: HeaderMap) -> Builder {
+        self.and_then(move |mut head| {
+            head.headers = map;
+            Ok(head)
+        })
+    }
+
     /// Appends a header to this request builder.
     ///
     /// This function will append the provided key/value as a header to the

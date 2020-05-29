@@ -1850,7 +1850,7 @@ impl fmt::Display for HeaderName {
 }
 
 impl InvalidHeaderName {
-    fn new() -> InvalidHeaderName {
+    pub(crate) fn new() -> InvalidHeaderName {
         InvalidHeaderName { _priv: () }
     }
 }

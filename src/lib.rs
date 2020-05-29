@@ -24,6 +24,16 @@ pub mod error;
 mod extensions;
 mod client;
 mod byte_str;
+mod cookie;
+
+mod proto;
+mod body;
+
+pub mod config {
+    pub mod h1 {
+        pub use crate::proto::HttpConfig;
+    }
+}
 
 pub mod headers {
     pub use crate::header::{ACCEPT, ACCEPT_CHARSET, ACCEPT_ENCODING, ACCEPT_LANGUAGE, ACCEPT_RANGES,
@@ -110,10 +120,12 @@ pub mod headers {
 pub mod produce {
     pub use url::{ParseError, Url};
 
-    pub use crate::client::Client;
+    pub use crate::body::{Body, BodyKind};
+    pub use crate::client::HttpClient;
     pub use crate::error::{Error, Result};
     pub use crate::extensions::Extensions;
     pub use crate::method::Method;
+    pub use crate::proto::Connector;
     pub use crate::request::{Builder, Request};
     pub use crate::response::Response;
     pub use crate::status::StatusCode;
@@ -131,29 +143,4 @@ fn _assert_types() {
 
     assert_sync::<Request<()>>();
     assert_sync::<Response<()>>();
-}
-
-mod tests {
-    use crate::produce::*;
-
-    #[test]
-    pub fn response() {
-        let req = Request::new(Vec::new());
-        let mut client = Client::new(&req).expect("error");
-        let _resp = client.send().expect("");
-    }
-
-    #[test]
-    pub fn parse_url() {
-        let url = Url::parse("http://www.baidu.com").expect("invalid url");
-        let scheme = url.scheme();
-        let addr = url.socket_addrs(|| match scheme {
-            "http" => Some(80),
-            "https" => Some(8080),
-            _ => None,
-        }).expect("invalid url").into_iter()
-            .next().expect("invalid url");
-        println!("{}", addr.ip());
-        println!("{}", addr.port());
-    }
 }

@@ -12,7 +12,7 @@
 //! ```
 //! use request_rs::produce::*;
 //!
-//! fn respond_to(req: Request<()>) -> http::Result<Response<()>> {
+//! fn respond_to(req: Request<()>) -> Result<Response<()>> {
 //!     let mut builder = Response::builder()
 //!         .header("Foo", "Bar")
 //!         .status(StatusCode::OK);
@@ -30,7 +30,7 @@
 //! ```
 //! use request_rs::produce::*;
 //!
-//! fn not_found(_req: Request<()>) -> http::Result<Response<()>> {
+//! fn not_found(_req: Request<()>) -> Result<Response<()>> {
 //!     Response::builder()
 //!         .status(StatusCode::NOT_FOUND)
 //!         .body(())
@@ -42,7 +42,7 @@
 //! ```no_run
 //! use request_rs::produce::*;
 //!
-//! fn get(url: &str) -> http::Result<Response<()>> {
+//! fn get(url: &str) -> Result<Response<()>> {
 //!     // ...
 //! # panic!()
 //! }
@@ -89,7 +89,7 @@ use crate::version::Version;
 /// ```
 /// use request_rs::produce::*;
 ///
-/// fn respond_to(req: Request<()>) -> http::Result<Response<()>> {
+/// fn respond_to(req: Request<()>) -> Result<Response<()>> {
 ///     let mut builder = Response::builder()
 ///         .header("Foo", "Bar")
 ///         .status(StatusCode::OK);
@@ -107,7 +107,7 @@ use crate::version::Version;
 /// ```
 /// use request_rs::produce::*;
 ///
-/// fn not_found(_req: Request<()>) -> http::Result<Response<()>> {
+/// fn not_found(_req: Request<()>) -> Result<Response<()>> {
 ///     Response::builder()
 ///         .status(StatusCode::NOT_FOUND)
 ///         .body(())
@@ -119,7 +119,7 @@ use crate::version::Version;
 /// ```no_run
 /// use request_rs::produce::*;
 ///
-/// fn get(url: &str) -> http::Result<Response<()>> {
+/// fn get(url: &str) -> Result<Response<()>> {
 ///     // ...
 /// # panic!()
 /// }
@@ -570,6 +570,33 @@ impl Builder {
             Ok(head)
         })
     }
+
+    /// Set the HTTP headers for this response.
+    ///
+    /// This function will configure the HTTP version of the `Response` that
+    /// will be returned from `Builder::build`.
+    ///
+    /// By default this is HTTP/1.1
+    ///
+     /// # Examples
+    ///
+    /// ```
+    /// use request_rs::produce::*;
+    /// use request_rs::headers::HeaderMap;
+    /// let mut header = HeaderMap::new();
+    /// header.append("Content-Type","text/html".parse().unwrap());
+    /// let response = Response::builder()
+    ///     .version(Version::HTTP_2)
+    ///     .set_header_map(header)
+    ///     .unwrap();
+    /// ```
+    pub fn set_header_map(self, map: HeaderMap) -> Builder {
+        self.and_then(move |mut head| {
+            head.headers = map;
+            Ok(head)
+        })
+    }
+
 
     /// Set the HTTP version for this response.
     ///

@@ -1742,35 +1742,34 @@ impl<T> IntoIterator for HeaderMap<T> {
     /// # use http::header;
     /// # use  request_rs::headers::*;
     /// let mut map = HeaderMap::new();
-    /// map.insert(header::CONTENT_LENGTH, "123".parse().unwrap());
-    /// map.insert(header::CONTENT_TYPE, "json".parse().unwrap());
+    /// map.insert(CONTENT_LENGTH, "123".parse().unwrap());
+    /// map.insert(CONTENT_TYPE, "json".parse().unwrap());
     ///
     /// let mut iter = map.into_iter();
-    /// assert_eq!(iter.next(), Some((Some(header::CONTENT_LENGTH), "123".parse().unwrap())));
-    /// assert_eq!(iter.next(), Some((Some(header::CONTENT_TYPE), "json".parse().unwrap())));
+    /// assert_eq!(iter.next(), Some((Some(CONTENT_LENGTH), "123".parse().unwrap())));
+    /// assert_eq!(iter.next(), Some((Some(CONTENT_TYPE), "json".parse().unwrap())));
     /// assert!(iter.next().is_none());
     /// ```
     ///
     /// Multiple values per key.
     ///
     /// ```
-    /// # use http::header;
     /// # use  request_rs::headers::*;
     /// let mut map = HeaderMap::new();
     ///
-    /// map.append(header::CONTENT_LENGTH, "123".parse().unwrap());
-    /// map.append(header::CONTENT_LENGTH, "456".parse().unwrap());
+    /// map.append(CONTENT_LENGTH, "123".parse().unwrap());
+    /// map.append(CONTENT_LENGTH, "456".parse().unwrap());
     ///
-    /// map.append(header::CONTENT_TYPE, "json".parse().unwrap());
-    /// map.append(header::CONTENT_TYPE, "html".parse().unwrap());
-    /// map.append(header::CONTENT_TYPE, "xml".parse().unwrap());
+    /// map.append(CONTENT_TYPE, "json".parse().unwrap());
+    /// map.append(CONTENT_TYPE, "html".parse().unwrap());
+    /// map.append(CONTENT_TYPE, "xml".parse().unwrap());
     ///
     /// let mut iter = map.into_iter();
     ///
-    /// assert_eq!(iter.next(), Some((Some(header::CONTENT_LENGTH), "123".parse().unwrap())));
+    /// assert_eq!(iter.next(), Some((Some(CONTENT_LENGTH), "123".parse().unwrap())));
     /// assert_eq!(iter.next(), Some((None, "456".parse().unwrap())));
     ///
-    /// assert_eq!(iter.next(), Some((Some(header::CONTENT_TYPE), "json".parse().unwrap())));
+    /// assert_eq!(iter.next(), Some((Some(CONTENT_TYPE), "json".parse().unwrap())));
     /// assert_eq!(iter.next(), Some((None, "html".parse().unwrap())));
     /// assert_eq!(iter.next(), Some((None, "xml".parse().unwrap())));
     /// assert!(iter.next().is_none());
@@ -3244,7 +3243,7 @@ mod into_header_name {
     use super::{Entry, HdrName, HeaderMap, HeaderName};
 
     /// A marker trait used to identify values that can be used as insert keys
-                    /// to a `HeaderMap`.
+                                /// to a `HeaderMap`.
     pub trait IntoHeaderName: Sealed {}
 
     // All methods are on this pub(super) trait, instead of `IntoHeaderName`,
@@ -3337,7 +3336,7 @@ mod as_header_name {
     use super::{Entry, HdrName, HeaderMap, HeaderName, InvalidHeaderName};
 
     /// A marker trait used to identify values that can be used as search keys
-                    /// to a `HeaderMap`.
+                                /// to a `HeaderMap`.
     pub trait AsHeaderName: Sealed {}
 
     // All methods are on this pub(super) trait, instead of `AsHeaderName`,

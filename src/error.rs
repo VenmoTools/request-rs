@@ -154,6 +154,7 @@ enum ErrorKind {
     IoError(IoError),
     FromUtf8Error(FromUtf8Error),
     InvalidHttpHeader(InvalidHttpHeader),
+    ParseError(httparse::Error),
 }
 
 impl fmt::Debug for Error {
@@ -193,6 +194,7 @@ impl Error {
             FromUtf8Error(ref e) => e,
             InvalidHttpVersion(ref e) => e,
             InvalidHttpHeader(ref e) => e,
+            ParseError(ref e) => e,
         }
     }
 }
@@ -218,6 +220,7 @@ impl_error!(InvalidUrl);
 impl_error!(IoError);
 impl_error!(InvalidHttpHeader);
 
+from_error!(httparse::Error,ErrorKind::ParseError);
 from_error!(InvalidHttpHeader,ErrorKind::InvalidHttpHeader);
 from_error!(IoError,ErrorKind::IoError);
 from_error!(InvalidUrl,ErrorKind::InvalidUrl);
