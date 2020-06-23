@@ -17,6 +17,8 @@ pub enum ParserResult<T> {
     Partial,
 }
 
+/// the HttpClient inner type
+/// usr can implement Connector and use it by HttpClient::from_connector()
 pub trait Connector: Read + Write {
     /// connect to socket addr
     fn create_connection(&mut self, socket_addr: &SocketAddr) -> Result<TcpStream>;

@@ -10,16 +10,26 @@ use crate::body_kind;
 use crate::error::Result;
 use crate::proto::Connector;
 
+/// the tcp configuration for http client
 #[derive(Debug, Clone)]
 pub struct HttpConfig {
+    /// if is None use default time
     pub connect_timeout: Option<Duration>,
+    ///
     pub happy_eyeballs_timeout: Option<Duration>,
+    /// if is None use default time
     pub keep_alive_timeout: Option<Duration>,
+    /// if is None use System given ip address(127.0.0.1)
     pub local_address: Option<IpAddr>,
+    /// not delay
     pub nodelay: bool,
+    /// tcp connector will reuse ip address and port if `reuse_address` is true
     pub reuse_address: bool,
+    /// tcp send buffer size default size if is None
     pub send_buffer_size: Option<usize>,
+    /// tcp received buffer size default size if is None
     pub recv_buffer_size: Option<usize>,
+    ///
     pub ttl: u32,
 }
 

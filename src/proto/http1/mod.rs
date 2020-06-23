@@ -23,6 +23,7 @@ fn connection_has(value: &HeaderValue, needle: &str) -> bool {
     false
 }
 
+#[allow(unused_imports)]
 mod parser_test {
     use bytes::BytesMut;
     use url::Url;

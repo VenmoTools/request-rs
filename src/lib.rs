@@ -25,16 +25,19 @@ mod extensions;
 mod client;
 mod byte_str;
 mod cookie;
-
+pub mod macros;
 mod proto;
 mod body;
 
+/// http configuration
 pub mod config {
+    /// for http 1.*
     pub mod h1 {
         pub use crate::proto::HttpConfig;
     }
 }
 
+/// http headers
 pub mod headers {
     pub use crate::header::{ACCEPT, ACCEPT_CHARSET, ACCEPT_ENCODING, ACCEPT_LANGUAGE, ACCEPT_RANGES,
                             ACCESS_CONTROL_ALLOW_CREDENTIALS,
@@ -117,6 +120,7 @@ pub mod headers {
                             X_XSS_PROTECTION, };
 }
 
+/// simple
 pub mod produce {
     pub use url::{ParseError, Url};
 
@@ -143,4 +147,17 @@ fn _assert_types() {
 
     assert_sync::<Request<()>>();
     assert_sync::<Response<()>>();
+}
+
+mod test {
+    #[test]
+    pub fn header_macros() {
+        use crate::http_header;
+        let header = http_header! {
+            "Content-Type" => "text/html",
+            "Host" => "cn.bing.com",
+        };
+        assert_eq!("text/html", header["Content-Type"]);
+        assert_eq!("cn.bing.com", header["Host"]);
+    }
 }

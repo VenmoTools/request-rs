@@ -12,6 +12,7 @@ use crate::request::Request;
 use crate::response::Response;
 use crate::version::Version;
 
+/// the struct of http client
 #[derive(Debug)]
 pub struct HttpClient<C: Connector> {
     connector: C,

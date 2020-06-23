@@ -1,3 +1,4 @@
+//! Error type define here
 use std::error;
 use std::fmt;
 use std::net::AddrParseError;
@@ -41,12 +42,14 @@ pub struct Error {
 /// A `Result` typedef to use with the `http::Error` type
 pub type Result<T> = result::Result<T, Error>;
 
+/// Error type for Url
 #[derive(Debug, Clone)]
 pub struct InvalidUrl {
     msg: String,
 }
 
 impl InvalidUrl {
+    /// create an error for Url
     pub fn new(msg: &str) -> Self {
         Self { msg: msg.to_string() }
     }
@@ -58,13 +61,14 @@ impl fmt::Display for InvalidUrl {
     }
 }
 
-
+/// Error type for Http client
 #[derive(Debug, Clone, Copy)]
 pub struct IoError {
     repr: std::io::ErrorKind,
 }
 
 impl IoError {
+    /// convert IoError to str
     pub fn as_str(&self) -> &'static str {
         use std::io::ErrorKind::*;
         match self.repr {
@@ -98,6 +102,7 @@ impl fmt::Display for IoError {
 }
 
 impl IoError {
+    /// create io error for http client
     pub fn from_kind(repr: std::io::ErrorKind) -> Self {
         Self {
             repr
@@ -105,12 +110,14 @@ impl IoError {
     }
 }
 
+/// error type for http version
 #[derive(Debug, Clone)]
 pub struct InvalidHttpVersion {
     msg: String,
 }
 
 impl InvalidHttpVersion {
+    /// create an error for http version
     pub fn new(msg: &str) -> Self {
         Self { msg: msg.to_string() }
     }
@@ -122,12 +129,14 @@ impl fmt::Display for InvalidHttpVersion {
     }
 }
 
+/// Error type for http header
 #[derive(Debug, Clone)]
 pub struct InvalidHttpHeader {
     msg: String,
 }
 
 impl InvalidHttpHeader {
+    /// create a error message
     pub fn new(msg: &str) -> Self {
         Self { msg: msg.to_string() }
     }

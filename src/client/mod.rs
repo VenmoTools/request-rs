@@ -10,7 +10,7 @@ mod client;
 // then client connect 202.43.78.3:8080 and send a GET Request to host
 // once completed, the client will receive response data from the host
 // finally client close the connection.
-
+#[allow(unused_imports)]
 mod tests {
     use crate::produce::*;
 

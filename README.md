@@ -87,6 +87,15 @@ pub fn simple_post_with_file(){
     assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
 }
 
+pub fn simple_get_with_macro_header(){
+    let header = http_header! {
+        "Accept" => "text/html",
+        "Host" => "www.example.com",
+    };
+    let resp = HttpClient::request(Method::GET,"http://www.example.com/", None, Some(header)).expect("failed");
+    assert_eq!(StatusCode::from_u16(200).unwrap(), resp.status());
+}
+
 pub fn simple_post_with_empty(){ 
     let body = Body::empty();
     let mut header = HeaderMap::new();

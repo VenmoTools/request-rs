@@ -6,6 +6,7 @@ use bytes::BytesMut;
 
 use crate::error::Result;
 
+/// Request/Response body
 #[derive(Clone, Debug)]
 pub struct Body {
     kind: BodyKind
@@ -24,10 +25,12 @@ macro_rules! body_kind {
 }
 
 impl Body {
+    /// create a empty Request body
     pub fn empty() -> Self {
         Self::new(BodyKind::Empty)
     }
 
+    /// create the body use given `kind`
     pub fn new(kind: BodyKind) -> Self {
         Self {
             kind
@@ -35,24 +38,28 @@ impl Body {
     }
 
     // that's weird right?
-    pub fn from_form() {}
+    // pub fn from_form() {}
 
+    /// Create the Request Body from bytes
     pub fn from_bytes<B: AsRef<[u8]>>(bytes: B) -> Self {
         Body::new(BodyKind::Binary(BytesMut::from(bytes.as_ref())))
     }
-
+    /// Create the Request Body from string
     pub fn from_str(str: &str) -> Self {
         Body::new(BodyKind::Text(str.to_owned()))
     }
 
+    /// Create the Request Body from string
     pub fn from_string(str: String) -> Self {
         Body::new(BodyKind::Text(str.to_owned()))
     }
 
+    /// Create the Request Body from Vec
     pub fn from_vec(vec: Vec<u8>) -> Self {
         Body::new(BodyKind::Binary(BytesMut::from(vec.as_slice())))
     }
 
+    /// Create the Request Body from file
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Self> {
         let mut file = File::open(path)?;
         let mut data = Vec::new();
@@ -60,7 +67,7 @@ impl Body {
         Ok(Self::from_vec(data))
     }
 
-
+    /// return the Body length
     pub fn body_length(&self) -> usize {
         body_kind!(self.kind(),
             text => {
@@ -74,7 +81,7 @@ impl Body {
             }
         )
     }
-
+    /// return http body kind (Empty, Text or Binary)
     pub fn kind(&self) -> &BodyKind {
         &self.kind
     }
@@ -92,9 +99,13 @@ impl Body {
     // }
 }
 
+/// The Http Request/Response Body Type
 #[derive(Clone, Debug)]
 pub enum BodyKind {
+    /// the request content is text
     Text(String),
+    /// the request content is binary
     Binary(BytesMut),
+    /// the request content is empty
     Empty,
 }
